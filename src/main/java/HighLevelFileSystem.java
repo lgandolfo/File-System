@@ -1,19 +1,18 @@
 import java.io.File;
+import java.nio.Buffer;
+import java.util.function.Consumer;
 
-public class HighLevelFileSystem {
+public interface HighLevelFileSystem {
 
-    LowLevelFileSystem fileSystem;
+    public void setFileSystem(LowLevelFileSystem fileSystem);
 
-    public HighLevelFileSystem(LowLevelFileSystem fileSystem){
-        this.fileSystem = fileSystem;
-    }
+    public OpenedFile openFile(String path);
 
-    public File openFile(String path){
-        FileReadWrite file = new FileReadWrite(path,fileSystem);
-        return file.open();
-    }
+    public void closeFile(OpenedFile file);
 
-    public void closeFile(FileReadWrite file){
-       file.close();
-    }
+    public void syncRead(OpenedFile file, Memory buffer);
+
+    public void syncWrite(OpenedFile file, Memory buffer);
+
+    public void aSyncRead(OpenedFile file, Consumer<Memory> callback);
 }

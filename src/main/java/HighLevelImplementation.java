@@ -18,32 +18,5 @@ public class HighLevelImplementation implements HighLevelFileSystem {
         return new OpenedFile(fd, this.fileSystem);
     }
 
-    @Override
-    public void closeFile(OpenedFile file){
-        file.close();
-    }
-
-    @Override
-    public void syncRead(OpenedFile file, Memory buffer) {
-        int readBytes = file.getFileSystem().syncReadFile(file.getFileDescriptor(),
-                buffer.getBytes(), buffer.getStart(), buffer.getEnd());
-        buffer.addBytes(readBytes);
-    }
-
-    @Override
-    public void syncWrite(OpenedFile file, Memory buffer){
-        file.getFileSystem().syncWriteFile(file.getFileDescriptor(),
-                buffer.getBytes(), buffer.getStart(), buffer.getEnd());
-    }
-
-    @Override
-    public void aSyncRead(OpenedFile file, Consumer<Memory> callback){
-        Memory buffer = new Memory(100);
-        file.getFileSystem().asyncReadFile(file.getFileDescriptor(),
-                buffer.getBytes(), buffer.getStart(), buffer.getEnd(), readBytes -> {
-                    buffer.addBytes(readBytes);
-                    callback.accept(buffer);
-                });
-    }
 
 }

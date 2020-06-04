@@ -57,7 +57,7 @@ public class FileTest {
 
             aFile = highLevelFileSystem.openFile("unaRuta");
             Memory buffer = new Memory(10);
-            highLevelFileSystem.syncRead(aFile,buffer);
+            aFile.syncRead(buffer);
             verify(lowLevelFileSystem)
                     .syncReadFile(eq(aFile.getFileDescriptor()),
                             same(buffer.getBytes()), eq(buffer.getStart()),
@@ -76,7 +76,7 @@ public class FileTest {
             when(lowLevelFileSystem.openFile("unaRuta")).thenReturn(100);
             aFile = highLevelFileSystem.openFile("unaRuta");
 
-            highLevelFileSystem.aSyncRead(aFile,(buffer -> {}));
+            aFile.aSyncRead((buffer -> {}));
             verify(lowLevelFileSystem).
                     asyncReadFile(anyInt(),
                             any(byte[].class),
@@ -84,5 +84,5 @@ public class FileTest {
                             anyInt(),
                             any(Consumer.class));
         }
-        
+
 }

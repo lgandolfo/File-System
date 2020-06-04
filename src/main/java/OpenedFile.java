@@ -1,3 +1,5 @@
+import java.util.function.Consumer;
+
 public class OpenedFile {
 
     private int fileDescriptor;
@@ -21,5 +23,32 @@ public class OpenedFile {
         return fileDescriptor;
     }
 
+
+    public void closeFile(){
+        fileSystem.closeFile(this.getFileDescriptor());
+    }
+
+
+    public void syncRead(Memory buffer) {
+        int readBytes = fileSystem.syncReadFile(this.getFileDescriptor(),
+                buffer.getBytes(), buffer.getStart(), buffer.getEnd());
+        buffer.addBytes(readBytes);
+    }
+
+
+    public void syncWrite(Memory buffer){
+        fileSystem.syncWriteFile(this.getFileDescriptor(),
+                buffer.getBytes(), buffer.getStart(), buffer.getEnd());
+    }
+
+
+    public void aSyncRead(Consumer<Memory> callback){
+        Memory buffer = new Memory(100);
+        fileSystem.asyncReadFile(this.getFileDescriptor(),
+                buffer.getBytes(), buffer.getStart(), buffer.getEnd(), readBytes -> {
+                    buffer.addBytes(readBytes);
+                    callback.accept(buffer);
+                });
+    }
 
 }
